@@ -1,3 +1,4 @@
+import '@tanstack/react-start/server-only';
 import { createServerFn } from '@tanstack/react-start';
 import { deleteTodo, getAllTodos, getTodoById, insertTodo, updateIsCompleted, updateTodo } from './server';
 import z from 'zod';
