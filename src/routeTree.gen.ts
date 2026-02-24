@@ -9,10 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LocalCountRouteImport } from './routes/local-count'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TodosNewRouteImport } from './routes/todos/new'
 import { Route as TodosIdEditRouteImport } from './routes/todos/$id.edit'
 
+const LocalCountRoute = LocalCountRouteImport.update({
+  id: '/local-count',
+  path: '/local-count',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -31,36 +37,47 @@ const TodosIdEditRoute = TodosIdEditRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/local-count': typeof LocalCountRoute
   '/todos/new': typeof TodosNewRoute
   '/todos/$id/edit': typeof TodosIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/local-count': typeof LocalCountRoute
   '/todos/new': typeof TodosNewRoute
   '/todos/$id/edit': typeof TodosIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/local-count': typeof LocalCountRoute
   '/todos/new': typeof TodosNewRoute
   '/todos/$id/edit': typeof TodosIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/todos/new' | '/todos/$id/edit'
+  fullPaths: '/' | '/local-count' | '/todos/new' | '/todos/$id/edit'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/todos/new' | '/todos/$id/edit'
-  id: '__root__' | '/' | '/todos/new' | '/todos/$id/edit'
+  to: '/' | '/local-count' | '/todos/new' | '/todos/$id/edit'
+  id: '__root__' | '/' | '/local-count' | '/todos/new' | '/todos/$id/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  LocalCountRoute: typeof LocalCountRoute
   TodosNewRoute: typeof TodosNewRoute
   TodosIdEditRoute: typeof TodosIdEditRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/local-count': {
+      id: '/local-count'
+      path: '/local-count'
+      fullPath: '/local-count'
+      preLoaderRoute: typeof LocalCountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  LocalCountRoute: LocalCountRoute,
   TodosNewRoute: TodosNewRoute,
   TodosIdEditRoute: TodosIdEditRoute,
 }
