@@ -10,12 +10,13 @@ import { Button } from '@/components/ui/button';
 import { authClient } from '@/lib/auth-client';
 import type { getSession } from '@/lib/auth.server';
 import { Link, useNavigate } from '@tanstack/react-router';
+import { BetterAuthActionButton } from './auth/BetterAuthActionButton';
 
 export const Header = ({ session }: { session: Awaited<ReturnType<typeof getSession>> }) => {
 	const navigate = useNavigate();
 
-	const logout = async () => {
-		await authClient.signOut({
+	const logout = () => {
+		return authClient.signOut({
 			fetchOptions: {
 				onSuccess: () => {
 					navigate({ to: '/login' });
@@ -48,9 +49,9 @@ export const Header = ({ session }: { session: Awaited<ReturnType<typeof getSess
 						{session ? (
 							<>
 								<span>{session?.user?.name}</span>
-								<Button variant='destructive' size='sm' onClick={logout}>
+								<BetterAuthActionButton variant='destructive' size='sm' action={logout}>
 									Logout
-								</Button>
+								</BetterAuthActionButton>
 							</>
 						) : (
 							<>
