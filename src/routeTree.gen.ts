@@ -10,13 +10,22 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LocalCountRouteImport } from './routes/local-count'
+import { Route as ProtectedRouteImport } from './routes/_protected'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as TodosNewRouteImport } from './routes/todos/new'
-import { Route as TodosIdEditRouteImport } from './routes/todos/$id.edit'
+import { Route as AuthSignUpRouteImport } from './routes/_auth/sign-up'
+import { Route as AuthLoginRouteImport } from './routes/_auth/login'
+import { Route as ProtectedTodosIndexRouteImport } from './routes/_protected/todos/index'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as ProtectedTodosNewRouteImport } from './routes/_protected/todos/new'
+import { Route as ProtectedTodosIdEditRouteImport } from './routes/_protected/todos/$id.edit'
 
 const LocalCountRoute = LocalCountRouteImport.update({
   id: '/local-count',
   path: '/local-count',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProtectedRoute = ProtectedRouteImport.update({
+  id: '/_protected',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -24,49 +33,110 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TodosNewRoute = TodosNewRouteImport.update({
-  id: '/todos/new',
-  path: '/todos/new',
+const AuthSignUpRoute = AuthSignUpRouteImport.update({
+  id: '/_auth/sign-up',
+  path: '/sign-up',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TodosIdEditRoute = TodosIdEditRouteImport.update({
+const AuthLoginRoute = AuthLoginRouteImport.update({
+  id: '/_auth/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProtectedTodosIndexRoute = ProtectedTodosIndexRouteImport.update({
+  id: '/todos/',
+  path: '/todos/',
+  getParentRoute: () => ProtectedRoute,
+} as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProtectedTodosNewRoute = ProtectedTodosNewRouteImport.update({
+  id: '/todos/new',
+  path: '/todos/new',
+  getParentRoute: () => ProtectedRoute,
+} as any)
+const ProtectedTodosIdEditRoute = ProtectedTodosIdEditRouteImport.update({
   id: '/todos/$id/edit',
   path: '/todos/$id/edit',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => ProtectedRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/local-count': typeof LocalCountRoute
-  '/todos/new': typeof TodosNewRoute
-  '/todos/$id/edit': typeof TodosIdEditRoute
+  '/login': typeof AuthLoginRoute
+  '/sign-up': typeof AuthSignUpRoute
+  '/todos/new': typeof ProtectedTodosNewRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/todos/': typeof ProtectedTodosIndexRoute
+  '/todos/$id/edit': typeof ProtectedTodosIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/local-count': typeof LocalCountRoute
-  '/todos/new': typeof TodosNewRoute
-  '/todos/$id/edit': typeof TodosIdEditRoute
+  '/login': typeof AuthLoginRoute
+  '/sign-up': typeof AuthSignUpRoute
+  '/todos/new': typeof ProtectedTodosNewRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/todos': typeof ProtectedTodosIndexRoute
+  '/todos/$id/edit': typeof ProtectedTodosIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_protected': typeof ProtectedRouteWithChildren
   '/local-count': typeof LocalCountRoute
-  '/todos/new': typeof TodosNewRoute
-  '/todos/$id/edit': typeof TodosIdEditRoute
+  '/_auth/login': typeof AuthLoginRoute
+  '/_auth/sign-up': typeof AuthSignUpRoute
+  '/_protected/todos/new': typeof ProtectedTodosNewRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/_protected/todos/': typeof ProtectedTodosIndexRoute
+  '/_protected/todos/$id/edit': typeof ProtectedTodosIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/local-count' | '/todos/new' | '/todos/$id/edit'
+  fullPaths:
+    | '/'
+    | '/local-count'
+    | '/login'
+    | '/sign-up'
+    | '/todos/new'
+    | '/api/auth/$'
+    | '/todos/'
+    | '/todos/$id/edit'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/local-count' | '/todos/new' | '/todos/$id/edit'
-  id: '__root__' | '/' | '/local-count' | '/todos/new' | '/todos/$id/edit'
+  to:
+    | '/'
+    | '/local-count'
+    | '/login'
+    | '/sign-up'
+    | '/todos/new'
+    | '/api/auth/$'
+    | '/todos'
+    | '/todos/$id/edit'
+  id:
+    | '__root__'
+    | '/'
+    | '/_protected'
+    | '/local-count'
+    | '/_auth/login'
+    | '/_auth/sign-up'
+    | '/_protected/todos/new'
+    | '/api/auth/$'
+    | '/_protected/todos/'
+    | '/_protected/todos/$id/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ProtectedRoute: typeof ProtectedRouteWithChildren
   LocalCountRoute: typeof LocalCountRoute
-  TodosNewRoute: typeof TodosNewRoute
-  TodosIdEditRoute: typeof TodosIdEditRoute
+  AuthLoginRoute: typeof AuthLoginRoute
+  AuthSignUpRoute: typeof AuthSignUpRoute
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -78,6 +148,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LocalCountRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_protected': {
+      id: '/_protected'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof ProtectedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -85,28 +162,74 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/todos/new': {
-      id: '/todos/new'
-      path: '/todos/new'
-      fullPath: '/todos/new'
-      preLoaderRoute: typeof TodosNewRouteImport
+    '/_auth/sign-up': {
+      id: '/_auth/sign-up'
+      path: '/sign-up'
+      fullPath: '/sign-up'
+      preLoaderRoute: typeof AuthSignUpRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/todos/$id/edit': {
-      id: '/todos/$id/edit'
+    '/_auth/login': {
+      id: '/_auth/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof AuthLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_protected/todos/': {
+      id: '/_protected/todos/'
+      path: '/todos'
+      fullPath: '/todos/'
+      preLoaderRoute: typeof ProtectedTodosIndexRouteImport
+      parentRoute: typeof ProtectedRoute
+    }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_protected/todos/new': {
+      id: '/_protected/todos/new'
+      path: '/todos/new'
+      fullPath: '/todos/new'
+      preLoaderRoute: typeof ProtectedTodosNewRouteImport
+      parentRoute: typeof ProtectedRoute
+    }
+    '/_protected/todos/$id/edit': {
+      id: '/_protected/todos/$id/edit'
       path: '/todos/$id/edit'
       fullPath: '/todos/$id/edit'
-      preLoaderRoute: typeof TodosIdEditRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof ProtectedTodosIdEditRouteImport
+      parentRoute: typeof ProtectedRoute
     }
   }
 }
 
+interface ProtectedRouteChildren {
+  ProtectedTodosNewRoute: typeof ProtectedTodosNewRoute
+  ProtectedTodosIndexRoute: typeof ProtectedTodosIndexRoute
+  ProtectedTodosIdEditRoute: typeof ProtectedTodosIdEditRoute
+}
+
+const ProtectedRouteChildren: ProtectedRouteChildren = {
+  ProtectedTodosNewRoute: ProtectedTodosNewRoute,
+  ProtectedTodosIndexRoute: ProtectedTodosIndexRoute,
+  ProtectedTodosIdEditRoute: ProtectedTodosIdEditRoute,
+}
+
+const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
+  ProtectedRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ProtectedRoute: ProtectedRouteWithChildren,
   LocalCountRoute: LocalCountRoute,
-  TodosNewRoute: TodosNewRoute,
-  TodosIdEditRoute: TodosIdEditRoute,
+  AuthLoginRoute: AuthLoginRoute,
+  AuthSignUpRoute: AuthSignUpRoute,
+  ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

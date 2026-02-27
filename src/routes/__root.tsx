@@ -5,6 +5,10 @@ import { TanStackDevtools } from '@tanstack/react-devtools';
 import { getLocale } from '#/paraglide/runtime';
 
 import appCss from '../styles.css?url';
+import { Toaster } from '@/components/ui/sonner';
+import { Header } from '@/components/Header';
+import { getSession } from '@/lib/auth.server';
+import { session } from '../db/schema/auth-schema';
 
 export const Route = createRootRoute({
 	beforeLoad: async () => {
@@ -38,16 +42,25 @@ export const Route = createRootRoute({
 		],
 	}),
 	shellComponent: RootDocument,
+	loader: async () => {
+		return {
+			session: await getSession(),
+		};
+	},
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+	const { session } = Route.useLoaderData();
 	return (
 		<html lang={getLocale()} className='dark'>
 			<head>
 				<HeadContent />
 			</head>
 			<body>
+				<Header session={session} />
 				{children}
+				<Toaster position='top-right' />
+
 				<TanStackDevtools
 					config={{
 						position: 'bottom-right',
