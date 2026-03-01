@@ -10,6 +10,7 @@ export const SocialAuthButton = () => {
 		const Icon = SUPPORTED_OAUTH_PROVIDERS_DETAILS[provider].icon;
 		return (
 			<BetterAuthActionButton
+				type='button'
 				variant={'outline'}
 				key={provider}
 				action={() => {
