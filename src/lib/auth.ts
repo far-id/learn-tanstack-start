@@ -2,11 +2,24 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "@/db";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
+import { sendResetPasswordEmail } from './email/send-reset-password-email';
+import { sendVerificationEmail } from './email/send-verification-email';
 
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
   emailAndPassword: {
     enabled: true,
+    requireEmailVerification: true,
+    sendResetPassword: async ({ user, url }) => {
+      sendResetPasswordEmail({ user, url });
+    },
+  },
+  emailVerification: {
+    autoSignInAfterVerification: true,
+    sendOnSignUp: true,
+    sendVerificationEmail: async ({ user, url }) => {
+      sendVerificationEmail({ user, url });
+    },
   },
   socialProviders: {
     github: {

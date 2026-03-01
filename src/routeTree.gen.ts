@@ -14,6 +14,7 @@ import { Route as ProtectedRouteImport } from './routes/_protected'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthSignUpRouteImport } from './routes/_auth/sign-up'
+import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as ProtectedTodosIndexRouteImport } from './routes/_protected/todos/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
@@ -41,6 +42,11 @@ const IndexRoute = IndexRouteImport.update({
 const AuthSignUpRoute = AuthSignUpRouteImport.update({
   id: '/sign-up',
   path: '/sign-up',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => AuthRoute,
 } as any)
 const AuthLoginRoute = AuthLoginRouteImport.update({
@@ -73,6 +79,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/local-count': typeof LocalCountRoute
   '/login': typeof AuthLoginRoute
+  '/reset-password': typeof AuthResetPasswordRoute
   '/sign-up': typeof AuthSignUpRoute
   '/todos/new': typeof ProtectedTodosNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -83,6 +90,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/local-count': typeof LocalCountRoute
   '/login': typeof AuthLoginRoute
+  '/reset-password': typeof AuthResetPasswordRoute
   '/sign-up': typeof AuthSignUpRoute
   '/todos/new': typeof ProtectedTodosNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -96,6 +104,7 @@ export interface FileRoutesById {
   '/_protected': typeof ProtectedRouteWithChildren
   '/local-count': typeof LocalCountRoute
   '/_auth/login': typeof AuthLoginRoute
+  '/_auth/reset-password': typeof AuthResetPasswordRoute
   '/_auth/sign-up': typeof AuthSignUpRoute
   '/_protected/todos/new': typeof ProtectedTodosNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -108,6 +117,7 @@ export interface FileRouteTypes {
     | '/'
     | '/local-count'
     | '/login'
+    | '/reset-password'
     | '/sign-up'
     | '/todos/new'
     | '/api/auth/$'
@@ -118,6 +128,7 @@ export interface FileRouteTypes {
     | '/'
     | '/local-count'
     | '/login'
+    | '/reset-password'
     | '/sign-up'
     | '/todos/new'
     | '/api/auth/$'
@@ -130,6 +141,7 @@ export interface FileRouteTypes {
     | '/_protected'
     | '/local-count'
     | '/_auth/login'
+    | '/_auth/reset-password'
     | '/_auth/sign-up'
     | '/_protected/todos/new'
     | '/api/auth/$'
@@ -182,6 +194,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignUpRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_auth/reset-password': {
+      id: '/_auth/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof AuthResetPasswordRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/_auth/login': {
       id: '/_auth/login'
       path: '/login'
@@ -222,11 +241,13 @@ declare module '@tanstack/react-router' {
 
 interface AuthRouteChildren {
   AuthLoginRoute: typeof AuthLoginRoute
+  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
   AuthSignUpRoute: typeof AuthSignUpRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthLoginRoute: AuthLoginRoute,
+  AuthResetPasswordRoute: AuthResetPasswordRoute,
   AuthSignUpRoute: AuthSignUpRoute,
 }
 

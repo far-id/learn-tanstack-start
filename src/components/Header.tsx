@@ -8,9 +8,9 @@ import {
 } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { authClient } from '@/lib/auth-client';
-import type { getSession } from '@/lib/auth.server';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { BetterAuthActionButton } from './auth/BetterAuthActionButton';
+import type { getSession } from '@/lib/auth.server';
 
 export const Header = ({ session }: { session: Awaited<ReturnType<typeof getSession>> }) => {
 	const navigate = useNavigate();
@@ -24,6 +24,7 @@ export const Header = ({ session }: { session: Awaited<ReturnType<typeof getSess
 			},
 		});
 	};
+
 	return (
 		<div className='flex flex-1 flex-col'>
 			<header className='bg-card sticky top-0 z-50 border-b'>

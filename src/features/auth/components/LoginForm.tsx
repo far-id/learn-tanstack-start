@@ -1,4 +1,3 @@
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -19,7 +18,13 @@ import { toast } from 'sonner';
 import { authClient } from '@/lib/auth-client';
 import { SocialAuthButton } from './SocialAuthButton';
 
-export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) {
+export function LoginForm({
+	openVerificationEmailTab,
+	openForgotPasswordTab,
+}: {
+	openVerificationEmailTab: (email: string) => void;
+	openForgotPasswordTab: () => void;
+}) {
 	const form = useForm({
 		defaultValues: {
 			email: '',
@@ -40,7 +45,12 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
 						toast.success('Logged in successfully!');
 					},
 					onError: (ctx) => {
-						toast.error(ctx.error.message);
+						if (ctx.error.status === 403) {
+							toast.error(ctx.error.message);
+							openVerificationEmailTab(value.email);
+						} else {
+							toast.error(ctx.error.message);
+						}
 					},
 				},
 			);
@@ -48,13 +58,16 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
 	});
 
 	return (
-		<div className={cn('flex flex-col gap-6', className)} {...props}>
+		<div className='flex flex-col gap-6'>
 			<Card>
 				<CardHeader className='text-center'>
 					<CardTitle className='text-xl'>Welcome back</CardTitle>
 					<CardDescription>Login with your Apple or Google account</CardDescription>
 				</CardHeader>
 				<CardContent>
+					<div className='flex flex-col gap-3'>
+						<SocialAuthButton />
+					</div>
 					<form
 						onSubmit={(e) => {
 							e.preventDefault();
@@ -63,10 +76,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
 						}}
 					>
 						<FieldGroup>
-							<Field>
-								<SocialAuthButton />
-							</Field>
-							<FieldSeparator className='*:data-[slot=field-separator-content]:bg-card'>
+							<FieldSeparator className='mt-4 *:data-[slot=field-separator-content]:bg-card'>
 								Or continue with
 							</FieldSeparator>
 							<form.Field name='email'>
@@ -99,9 +109,14 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
 										<Field>
 											<div className='flex items-center'>
 												<FieldLabel htmlFor='password'>Password</FieldLabel>
-												<Link to='/' className='ml-auto text-sm underline-offset-4 hover:underline'>
+												<Button
+													type='button'
+													variant={'link'}
+													onClick={openForgotPasswordTab}
+													className='ml-auto text-sm underline-offset-4 hover:underline'
+												>
 													Forgot your password?
-												</Link>
+												</Button>
 											</div>
 											<PasswordInput
 												id={field.name}
